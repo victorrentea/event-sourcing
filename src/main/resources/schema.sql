@@ -1,0 +1,1 @@
+create sequence user_id_seq start with 1 increment 1;

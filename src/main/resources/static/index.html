@@ -16,6 +16,25 @@ You can:
     <li>
         <a href="/v3/api-docs.yaml">Download the Open API it as a YAML</a>
     </li>
+    <li>
+        <a href="/events">See all events + snapshots</a>
+    </li>
+    <li>
+        <a href="/events/bare">See/Download bare events</a>
+    </li>
+    <li>
+        Upload (bare) events to rewrite history (what-if):
+        <form action="/events/upload" method="post" enctype="multipart/form-data" >
+            <input type="file" name="file">
+            <input type="submit" value="Upload">
+        </form>
+    </li>
+    <li>
+        <a href="/events/rewind-to/5">Time-travel to event #5</a>
+    </li>
+    <li>
+        <a href="/users-to-login">Read projection: users able to login</a>
+    </li>
 </ul>
 </body>
 </html>

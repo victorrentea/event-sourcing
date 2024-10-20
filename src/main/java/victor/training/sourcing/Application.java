@@ -1,16 +1,16 @@
 package victor.training.sourcing;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 
-@EnableAsync
+@Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
-public class CleanApplication {
+public class Application {
 
   @Bean
   public RestTemplate rest() {
@@ -18,7 +18,9 @@ public class CleanApplication {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(CleanApplication.class, args);
+    SpringApplication.run(Application.class, args);
   }
+
+
 }
 

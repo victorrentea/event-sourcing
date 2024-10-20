@@ -34,12 +34,14 @@ public class GlobalExceptionHandler {
 
   @ResponseStatus(NOT_FOUND)
   @ExceptionHandler(NoSuchElementException.class) // optional.get() on empty Optional
-  public String onNoSuchElementException() {
+  public String onNoSuchElementException(NoSuchElementException e) {
+    log.error("Not Found", e);
     return "Not Found!";
   }
 
   @ExceptionHandler(Exception.class)
   public String onAnyOtherException(Exception exception) {
+    log.error("Error", exception);
     return exception.toString();
   }
 
