@@ -6,8 +6,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
-import victor.training.sourcing.command.UserApi;
-import victor.training.sourcing.command.UserApi.CreateUserRequest;
+import victor.training.sourcing.command.UserRestApi;
+import victor.training.sourcing.command.UserRestApi.CreateUserRequest;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @TestMethodOrder(MethodName.class)
 public class ApiTest {
   @Autowired
-  UserApi api;
+  UserRestApi api;
 
    CreateUserRequest createRequest = new CreateUserRequest(
       "a@b.com",

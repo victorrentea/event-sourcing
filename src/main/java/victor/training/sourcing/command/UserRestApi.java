@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserApi {
+public class UserRestApi {
   private final EventProcessor eventProcessor;
   private final UserRepo userRepo;
 
@@ -44,9 +44,9 @@ public class UserApi {
       eventProcessor.apply(new UserRoleAssigned(userId).role(role));
     }
     // TODO discuss:
-    //  a) UserCreated{roles} 💖
-    //  b) UserRolesAssigned{roles}
-    //  c) UserRoleAssigned{role}
+    //  a) UserCreated{roles} = coarse, mapped to domain action (publisher convenience) 💖
+    //  b) UserRolesAssigned{roles} = aggregate event (perf++)
+    //  c) UserRoleAssigned{role} = fine-grained event (listener convenience)
     return userId;
   }
 
@@ -94,12 +94,6 @@ public class UserApi {
   @PutMapping("/{userId}/activate")
   public void activate(@PathVariable String userId) {
     eventProcessor.apply(new UserActivated(userId));
-  }
-
-  // pretend this is a @KafkaListener (to avoid having to setup Kafka on trainees' machines)
-  @GetMapping("/{userId}/login")
-  public void login(@PathVariable String userId) {
-    eventProcessor.apply(new UserLoggedIn(userId));
   }
 
 }

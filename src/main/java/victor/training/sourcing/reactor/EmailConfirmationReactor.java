@@ -12,23 +12,23 @@ import victor.training.sourcing.repo.UserRepo;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailConfirmation {
+// stateless logic triggered by events that reacts to events by firing other events (aka policy)
+public class EmailConfirmationReactor {
   private final EventProcessor eventProcessor;
   private final UserRepo userRepo;
 
-  // policy
   @EventListener // or on user email changed
   public void onUserCreated(UserCreated event) {
     if (event.replay()) {
       log.warn("NOOP on replay");
       return;
     }
-    log.info("Sending confirmation email to {} ...", event.email());
     sendEmail(event.email());
     eventProcessor.apply(new ConfirmationEmailSent(event.aggregateId()).email(event.email()));
   }
 
   private void sendEmail(String email) {
+    log.info("Sending confirmation email to {} ...", email);
     if (Math.random() < 0.1) {
       throw new RuntimeException("Email server down");
     }

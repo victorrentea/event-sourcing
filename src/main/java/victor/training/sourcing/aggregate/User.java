@@ -13,8 +13,8 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
 @Entity
 @Getter
-@Table(name = "users")
-@JsonAutoDetect(fieldVisibility = ANY)
+@Table(name = "USERS")
+@JsonAutoDetect(fieldVisibility = ANY) // JSONiefied for snapshots
 public class User extends Aggregate<AbstractUserEvent> {
   private String name;
   private String email;
@@ -27,14 +27,16 @@ public class User extends Aggregate<AbstractUserEvent> {
   @Version
   private Long version;
 
+  // Step1: command (sync or async) results in event(s)
   public List<AbstractUserEvent> confirmEmail(String email) {
     if (email.equals(this.email)) {
-      return List.of(new UserEmailConfirmed(this.id).email(email));
+      return List.of(new UserEmailConfirmed(id).email(email));
     } else {
       throw new IllegalArgumentException("Email mismatch: " + email + " vs " + this.email);
     }
   }
 
+  // Step2: the event(s) are applied to the aggregate to change its state
   public void apply(AbstractUserEvent userEvent) {
     switch (userEvent) {
       case UserCreated event -> {
@@ -43,7 +45,7 @@ public class User extends Aggregate<AbstractUserEvent> {
         this.name = event.name();
         this.emailValidated = false;
         this.departmentId = event.departmentId();
-        this.active = true; // XXX
+//        this.active = true; // TODO discuss: active before or after email confirmation?
       }
       case UserUpdated event -> {
         this.name = event.name();
@@ -54,17 +56,17 @@ public class User extends Aggregate<AbstractUserEvent> {
         this.emailValidated = false;
       }
       case UserEmailConfirmed event -> {
-        if (!event.email().equals(this.email)) {
-          throw new IllegalArgumentException("Email mismatch: " + event.email() + " vs " + this.email);
+        if (!event.email().equals(email)) { // TODO discuss: how to handle validation when applying the event?
+          throw new IllegalArgumentException("Email mismatch: " + event.email() + " vs " + email);
         }
         this.emailValidated = true;
-//        this.active = true; // TODO discuss: active before or after email confirmation?
+        this.active = true; // TODO discuss: active before or after email confirmation?
 //        registerEvent(new UserActivated(this.id));
       }
-      case UserDeactivated event -> this.active = false;
-      case UserActivated event -> this.active = true;
-      case UserRoleAssigned event -> this.roles.add(event.role());
-      case UserRoleRevoked event -> this.roles.remove(event.role());
+      case UserDeactivated event -> active = false;
+      case UserActivated event -> active = true;
+      case UserRoleAssigned event -> roles.add(event.role());
+      case UserRoleRevoked event -> roles.remove(event.role());
       case UserLoggedIn event -> this.lastLogin = event.observedAt();
       case ConfirmationEmailSent confirmationEmailSent -> {
       }

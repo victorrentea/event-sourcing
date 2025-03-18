@@ -1,0 +1,49 @@
+@userId=1
+@application=CORE
+
+### create user
+POST http://127.0.0.1:8080/users
+Content-Type: application/json
+
+{
+  "email": "jane@b.com",
+  "name": "Jane Doe",
+  "departmentId": "IT",
+  "roles": [ "app1:USER"]
+}
+
+### update user
+PUT http://127.0.0.1:8080/users/{{userId}}
+Content-Type: application/json
+
+{
+  "email": "jane@b.com",
+  "name": "Jane Doe",
+  "departmentId": "IT"
+}
+
+### confirm email
+PUT http://127.0.0.1:8080/users/{{userId}}/confirm-email/jane@b.com
+
+### add role to user
+POST http://127.0.0.1:8080/users/{{userId}}/roles/app1:ADMIN
+
+### remove role from user
+DELETE http://127.0.0.1:8080/users/{{userId}}/roles/app1:ADMIN
+
+### activate user
+PUT http://127.0.0.1:8080/users/{{userId}}/activate
+
+### deactivate user
+PUT http://127.0.0.1:8080/users/{{userId}}/deactivate
+
+### notify logic into an app
+GET http://127.0.0.1:8080/users/{{userId}}/login/{{application}}
+
+### see last login per user into an app
+GET http://127.0.0.1:8080/logins/{{application}}
+
+### see users able to login
+GET http://127.0.0.1:8080/users-to-login
+
+###

@@ -15,7 +15,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED) //for hibernate only
 public final class UserLoggedIn extends AbstractUserEvent {
   private String application;
-  private String email;
 
   public UserLoggedIn(String userId) {
     super(userId);

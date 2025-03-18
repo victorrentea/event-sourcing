@@ -1,4 +1,4 @@
-package victor.training.sourcing;
+package victor.training.sourcing.wip;
 
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;

@@ -1,10 +1,7 @@
 package victor.training.sourcing.event;
 
 import jakarta.persistence.Entity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import static lombok.AccessLevel.PROTECTED;
 

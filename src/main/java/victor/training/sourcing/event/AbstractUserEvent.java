@@ -6,7 +6,17 @@ import static lombok.AccessLevel.PROTECTED;
 
 @NoArgsConstructor(access = PROTECTED) //for hibernate only
 public sealed abstract class AbstractUserEvent extends AbstractEvent
-    permits ConfirmationEmailSent, UserCreated, UserDeactivated, UserEmailConfirmed, UserEmailUpdated, UserLoggedIn, UserActivated, UserRoleAssigned, UserRoleRevoked, UserUpdated {
+    permits
+    UserCreated,
+    ConfirmationEmailSent,
+    UserDeactivated,
+    UserEmailConfirmed,
+    UserEmailUpdated,
+    UserLoggedIn,
+    UserActivated,
+    UserRoleAssigned,
+    UserRoleRevoked,
+    UserUpdated {
 
   public AbstractUserEvent(String userId) {
     super(userId, "User");

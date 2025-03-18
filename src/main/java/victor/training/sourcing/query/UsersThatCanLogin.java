@@ -1,7 +1,6 @@
 package victor.training.sourcing.query;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class UsersAbleToLogin {
+public class UsersThatCanLogin {
   private final Map<String, String> confirmedEmailsToId = new HashMap<>();
   private final Set<String> inactiveUserIds = new HashSet<>();
 
@@ -33,19 +32,19 @@ public class UsersAbleToLogin {
   }
 
   @EventListener
-  public void onActivated(UserActivated event) throws JsonProcessingException {
+  public void onActivated(UserActivated event) {
     inactiveUserIds.remove(event.aggregateId());
   }
   @EventListener
-  public void onDeactivated(UserDeactivated event) throws JsonProcessingException {
+  public void onDeactivated(UserDeactivated event) {
     inactiveUserIds.add(event.aggregateId());
   }
   @EventListener
-  public void onEmailConfirmed(UserEmailConfirmed event) throws JsonProcessingException {
+  public void onEmailConfirmed(UserEmailConfirmed event) {
     confirmedEmailsToId.put(event.email(), event.aggregateId());
   }
   @EventListener
-  public void onEmailUpdated(UserEmailUpdated event) throws JsonProcessingException {
+  public void onEmailUpdated(UserEmailUpdated event) {
     confirmedEmailsToId.remove(event.email());
   }
 

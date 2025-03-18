@@ -2,7 +2,6 @@ package victor.training.sourcing;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
@@ -10,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
-public class Application {
+public class SpringApplication {
 
   @Bean
   public RestTemplate rest() {
@@ -18,9 +17,8 @@ public class Application {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
   }
-
 
 }
 

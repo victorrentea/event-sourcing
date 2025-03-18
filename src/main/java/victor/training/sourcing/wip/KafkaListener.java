@@ -1,4 +1,4 @@
-package victor.training.sourcing;
+package victor.training.sourcing.wip;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

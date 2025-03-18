@@ -24,18 +24,19 @@ import static java.lang.Long.MAX_VALUE;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class EventApi {
+public class EventRestApi {
   private final EventRepo eventRepo;
-  private final RestTemplate restTemplate;
   private final EventProcessor eventProcessor;
   private final ApplicationEventPublisher eventPublisher;
   private final UserRepo userRepo;
   private final SnapshotRepo snapshotRepo;
+  private final ObjectMapper objectMapper;
 
   @GetMapping("/events")
   public List<AbstractEvent> getEvents() {
     return eventRepo.findAll();
   }
+
   @GetMapping("/events/bare")
   public List<AbstractEvent> getEventsBare() {
     return eventRepo.findAll()
@@ -43,15 +44,15 @@ public class EventApi {
         .peek(e->e.snapshot(null))
         .toList();
   }
-
   // http://localhost:8080/events/2/snapshot
+
   @GetMapping("/events/{eventId}/snapshot")
   public Map<?, ?> getUserAfterEvent(@PathVariable Long eventId) {
     AbstractEvent event = eventRepo.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found: " + eventId));
     return event.getSnapshot();
   }
-
   // http://localhost:8080/events/2/replay
+
   @GetMapping("/events/{eventId}/replay")
   public User getUserAfterEventReplay(@PathVariable Long eventId) {
     AbstractEvent lastEvent = eventRepo.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found: " + eventId));
@@ -75,8 +76,8 @@ public class EventApi {
     }
     return user;
   }
-
   // eg http://localhost:8080/rewind-to/2
+
   @GetMapping("/events/rewind-to/{eventId}")
   public String rewindTo(@PathVariable Long eventId) {
     userRepo.deleteAll();
@@ -93,7 +94,6 @@ public class EventApi {
     }
     return "Rewound to event " + eventId + ". <a href='/events'>See events</a>";
   }
-
   @PostMapping("events/upload")
   public String uploadEvents(@RequestParam MultipartFile file) throws IOException {
     String contents = new String(file.getBytes());
@@ -105,5 +105,4 @@ public class EventApi {
     rewindTo(MAX_VALUE);
     return "event log overwritten OK with " + events.size() + " events. <a href='/'>Home</a>";
   }
-  private final ObjectMapper objectMapper;
 }
