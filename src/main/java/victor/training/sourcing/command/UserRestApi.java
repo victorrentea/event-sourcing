@@ -100,14 +100,14 @@ public class UserRestApi {
     eventProcessor.apply(new UserRoleRevoked(userId).role(role));
   }
 
-  @PutMapping("/{userId}/deactivate")
-  public void deactivate(@PathVariable String userId) {
-    eventProcessor.apply(new UserDeactivated(userId));
-  }
-
   @PutMapping("/{userId}/activate")
   public void activate(@PathVariable String userId) {
     eventProcessor.apply(new UserActivated(userId));
+  }
+
+  @PutMapping("/{userId}/deactivate")
+  public void deactivate(@PathVariable String userId) {
+    eventProcessor.apply(new UserDeactivated(userId));
   }
 
 }

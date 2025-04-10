@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StartupData {
+public class StartupCalls {
   private final RestTemplate rest;
 
   @EventListener(ApplicationStartedEvent.class)

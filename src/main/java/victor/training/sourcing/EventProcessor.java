@@ -1,18 +1,15 @@
 package victor.training.sourcing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import victor.training.sourcing.aggregate.Aggregate;
 import victor.training.sourcing.aggregate.User;
 import victor.training.sourcing.event.AbstractEvent;
 import victor.training.sourcing.event.AbstractUserEvent;
@@ -21,8 +18,6 @@ import victor.training.sourcing.repo.EventRepo;
 import victor.training.sourcing.repo.SnapshotRepo;
 import victor.training.sourcing.repo.UserRepo;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("ALL")
@@ -40,9 +35,10 @@ public class EventProcessor {
 
   @Transactional
   public void apply(@Valid AbstractEvent event) {
-    apply((AbstractUserEvent) event);
+    apply((AbstractUserEvent) event); // only user events ftm
   }
 
+  @SneakyThrows
   @Transactional
   public void apply(@Valid AbstractUserEvent event) {
     Optional<User> userOpt = userRepo.findById(event.aggregateId());
@@ -64,18 +60,11 @@ public class EventProcessor {
     userRepo.save(user);
 
     // ❓ persist a snapshot each time - space is cheap
-    snapshotRepo.save(new Snapshot(event, toJson(user))); // #3
+    snapshotRepo.save(new Snapshot(event, objectMapper.writeValueAsString(user))); // #3
 
     entityManager.flush();
     // trigger read-projections and reactors
     eventPublisher.publishEvent(event);
   }
 
-  private String toJson(Aggregate<?> aggregate) {
-    try {
-      return objectMapper.writeValueAsString(aggregate);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("Failed to convert aggregate to JSON", e);
-    }
-  }
 }

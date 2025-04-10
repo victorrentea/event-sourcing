@@ -27,17 +27,19 @@ public class User extends Aggregate<AbstractUserEvent> {
   @Version
   private Long version;
 
-  // Command (received sync/REST or async/MESSAGE) results in event(s)
+  // Command handler
   public List<AbstractUserEvent> confirmEmail(String email) {
     if (!email.equals(this.email)) {
       throw new IllegalArgumentException("Email mismatch: " + email + " vs " + this.email);
     }
-    // TODO start from imperative, return an event and then listen to it
-    // this.emailValidated = true; // traditional overwrite the old state
-    return List.of(new UserEmailConfirmed(id).email(email)); // event-sourcing
+    // A) traditional: overwrite the old state
+    // this.emailValidated = true;
+
+    // B) event-sourcing: generate events, without changing any state
+    return List.of(new UserEmailConfirmed(id).email(email));
   }
 
-  // Step2: the event(s) are applied to the aggregate to change its state
+  // Apply an event to change aggregate state
   public void apply(AbstractUserEvent userEvent) {
     switch (userEvent) {
       case UserCreated event -> {
@@ -57,19 +59,19 @@ public class User extends Aggregate<AbstractUserEvent> {
         this.emailValidated = false;
       }
       case UserEmailConfirmed event -> {
-        if (!event.email().equals(email)) { // TODO discuss: how to handle validation when applying the event?
+        if (!event.email().equals(email)) { // TODO discuss: when to validate?
           throw new IllegalArgumentException("Email mismatch: " + event.email() + " vs " + email);
         }
         this.emailValidated = true;
         this.active = true; // TODO discuss: active before or after email confirmation?
 //        registerEvent(new UserActivated(this.id));
       }
-      case UserDeactivated event -> active = false;
-      case UserActivated event -> active = true;
+      case UserDeactivated ignored -> active = false;
+      case UserActivated ignored -> active = true;
       case UserRoleAssigned event -> roles.add(event.role());
       case UserRoleRevoked event -> roles.remove(event.role());
       case UserLoggedIn event -> this.lastLogin = event.observedAt();
-      case ConfirmationEmailSent confirmationEmailSent -> {
+      case ConfirmationEmailSent ignored -> {
       }
     }
   }
