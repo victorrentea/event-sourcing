@@ -22,6 +22,27 @@ public class UserRestApi {
   private final EventProcessor eventProcessor;
   private final UserRepo userRepo;
 
+  public record GetUserResponse(
+      String id,
+      String email,
+      String name,
+      String departmentId,
+      List<String> roles
+  ) {
+    public static GetUserResponse fromUser(User user) {
+      return new GetUserResponse(user.id(), user.email(), user.name(), user.departmentId(), user.roles());
+    }
+  }
+
+  @GetMapping("/{userId}")
+  public GetUserResponse getUser(@PathVariable String userId) {
+    return userRepo.findById(userId).map(GetUserResponse::fromUser).orElseThrow();
+  }
+  @GetMapping
+  public List<GetUserResponse> getAllUsers() {
+    return userRepo.findAll().stream().map(GetUserResponse::fromUser).toList();
+  }
+
   @With
   public record CreateUserRequest(
       @Email String email,

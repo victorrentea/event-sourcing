@@ -50,6 +50,7 @@ public class EventProcessor {
 
     User user = userOpt.orElse(new User());
 
+    event.userAuthor("victor"); // TODO from SecurityContext
     // persist the event
     eventRepo.save(event);
 

@@ -39,13 +39,13 @@ public abstract class AbstractEvent {
   protected Long eventId;
   protected LocalDateTime observedAt = LocalDateTime.now();
   @Setter(NONE)
-  protected String eventType = this.getClass().getSimpleName();
+  protected String eventType = getClass().getSimpleName();
   @NotNull
   protected String aggregateId;
   @NotNull
   protected String aggregateType;
 
-//  protected String userAuthor; TODO
+  protected String userAuthor;
 
   protected boolean replay = false;
 
