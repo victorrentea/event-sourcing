@@ -14,6 +14,8 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED) //for hibernate only
 public final class UserCreated extends AbstractUserEvent {
   private String name;
+  private String firstName;
+  private String lastName;
   private String email;
   private String departmentId;
 

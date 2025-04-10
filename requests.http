@@ -26,7 +26,7 @@ Content-Type: application/json
 PUT http://127.0.0.1:8080/users/{{userId}}/confirm-email/jane@b.com
 
 ### add role to user
-POST http://127.0.0.1:8080/users/{{userId}}/roles/app1:ADMIN
+PUT http://127.0.0.1:8080/users/{{userId}}/roles/app2:ADMIN
 
 ### remove role from user
 DELETE http://127.0.0.1:8080/users/{{userId}}/roles/app1:ADMIN
@@ -37,7 +37,7 @@ PUT http://127.0.0.1:8080/users/{{userId}}/activate
 ### deactivate user
 PUT http://127.0.0.1:8080/users/{{userId}}/deactivate
 
-### notify logic into an app
+### notify login into an app
 GET http://127.0.0.1:8080/users/{{userId}}/login/{{application}}
 
 ### see last login per user into an app

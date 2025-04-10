@@ -51,9 +51,23 @@ public class UserRestApi {
   }
 
   @PutMapping("/{userId}/confirm-email")
-  public void confirmEmail(@PathVariable String userId, @RequestParam String email) {
+  public void confirmEmail(@PathVariable String userId, @RequestParam @Email String email) {
     User user = userRepo.findById(userId).orElseThrow();
+    // traditional style changes - "burn the old data"
+//    user.setEmailConfirmed(true); // you loose WHO, WHEN, IN WHAT ORDER
+
+    // audit-opt#1 - audit columns
+//    user.setLastModifiedBy(currentUser);
+    // audit-opt#2 - audit table
+//    auditRepo.save(new Audit("user-confirmed-email",userId, currentUser,...))
+    // audit-opt#3 - auto-save revisions on each change with Hibernate Envers https://hibernate.org/orm/envers/
+
+//    userRepo.save(user);
+
+    // audit-opt#4 - event sourcing = events are the source of truth
+    // 1. a command results in domain event(s)
     List<AbstractUserEvent> events = user.confirmEmail(email);
+    // 2. changes can only happen when applying events
     events.forEach(eventProcessor::apply);
   }
 

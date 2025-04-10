@@ -12,7 +12,7 @@ import victor.training.sourcing.repo.UserRepo;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-// stateless logic triggered by events that reacts to events by firing other events (aka policy)
+// stateless event listener that fires other events
 public class EmailConfirmationReactor {
   private final EventProcessor eventProcessor;
   private final UserRepo userRepo;
@@ -28,9 +28,9 @@ public class EmailConfirmationReactor {
   }
 
   private void sendEmail(String email) {
-    log.info("Sending confirmation email to {} ...", email);
+    log.info("SMTP: Sending confirmation email to {} ...", email);
     if (Math.random() < 0.1) {
-      throw new RuntimeException("Email server down");
+      //throw new RuntimeException("Email server down");
     }
   }
 }

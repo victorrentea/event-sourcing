@@ -27,13 +27,14 @@ public class User extends Aggregate<AbstractUserEvent> {
   @Version
   private Long version;
 
-  // Step1: command (sync or async) results in event(s)
+  // Command (received sync/REST or async/MESSAGE) results in event(s)
   public List<AbstractUserEvent> confirmEmail(String email) {
-    if (email.equals(this.email)) {
-      return List.of(new UserEmailConfirmed(id).email(email));
-    } else {
+    if (!email.equals(this.email)) {
       throw new IllegalArgumentException("Email mismatch: " + email + " vs " + this.email);
     }
+    // TODO start from imperative, return an event and then listen to it
+    // this.emailValidated = true; // traditional overwrite the old state
+    return List.of(new UserEmailConfirmed(id).email(email)); // event-sourcing
   }
 
   // Step2: the event(s) are applied to the aggregate to change its state

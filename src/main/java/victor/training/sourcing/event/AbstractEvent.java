@@ -45,6 +45,8 @@ public abstract class AbstractEvent {
   @NotNull
   protected String aggregateType;
 
+//  protected String userAuthor; TODO
+
   protected boolean replay = false;
 
   @JsonIgnore

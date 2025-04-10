@@ -46,6 +46,8 @@ public class EventRestApi {
   }
   // http://localhost:8080/events/2/snapshot
 
+  // TODO implement time travelling to a point in time
+
   @GetMapping("/events/{eventId}/snapshot")
   public Map<?, ?> getUserAfterEvent(@PathVariable Long eventId) {
     AbstractEvent event = eventRepo.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found: " + eventId));

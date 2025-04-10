@@ -19,7 +19,9 @@ import static java.util.Map.Entry.comparingByValue;
 @RestController
 @RequiredArgsConstructor
 public class LoginHistory {
-  private final Map<String, Map<String,LocalDateTime>> appToLogin = new HashMap<>();
+  // {app: {userId: lastLoginTime}}
+  private final Map<String, Map<String,LocalDateTime>> appToLogin =
+      new HashMap<>();
 
   @EventListener
   public void onUserEvent(UserLoggedIn event) {
