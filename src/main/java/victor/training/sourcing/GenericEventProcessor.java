@@ -1,21 +1,10 @@
 package victor.training.sourcing;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import victor.training.sourcing.aggregate.Aggregate;
-import victor.training.sourcing.aggregate.User;
-import victor.training.sourcing.event.AbstractEvent;
-import victor.training.sourcing.event.AbstractUserEvent;
 import victor.training.sourcing.repo.EventRepo;
 import victor.training.sourcing.repo.UserRepo;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

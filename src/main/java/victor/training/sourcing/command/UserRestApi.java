@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import victor.training.sourcing.EventProcessor;
 import victor.training.sourcing.aggregate.User;
@@ -13,6 +14,8 @@ import victor.training.sourcing.event.*;
 import victor.training.sourcing.repo.UserRepo;
 
 import java.util.List;
+
+import static victor.training.sourcing.event.UserEvent.*;
 
 @Slf4j
 @RestController
@@ -53,41 +56,39 @@ public class UserRestApi {
   }
 
   @PostMapping
-  public String createUser(@RequestBody CreateUserRequest request) {
+  public String createUser(@RequestBody @Validated CreateUserRequest request) {
 //    String userId = UUID.randomUUID().toString();// real
     String userId = "" + userRepo.getNewId();// demo convenience
-
-    eventProcessor.apply(new UserCreated(userId)
-        .name(request.name())
-        .email(request.email())
-        .departmentId(request.departmentId()));
-    for (String role : request.roles()) {
-      eventProcessor.apply(new UserRoleAssigned(userId).role(role));
-    }
+    List<UserEvent> events = User.create(request, userId);
+    events.forEach(eventProcessor::apply);
     // TODO discuss:
     //  a) UserCreated{roles} = coarse, mapped to domain action (publisher convenience) 💖
-    //  b) UserRolesAssigned{roles} = aggregate event (perf++)
-    //  c) UserRoleAssigned{role} = fine-grained event (listener convenience)
+    //  b) UserRolesAssigned{roles} = coarse-grained aggregated event
+    //  c) UserRoleAssigned{role} = fine-grained events (listener convenience)
     return userId;
   }
 
   @PutMapping("/{userId}/confirm-email")
-  public void confirmEmail(@PathVariable String userId, @RequestParam @Email String email) {
+  public void confirmEmail(@PathVariable String userId, @RequestParam @Validated  @Email String email) {
     User user = userRepo.findById(userId).orElseThrow();
-    // traditional style changes - "burn the old data"
+    // traditional style - "burn the old data"
 //    user.setEmailConfirmed(true); // you loose WHO, WHEN, IN WHAT ORDER
 
     // audit-opt#1 - audit columns
 //    user.setLastModifiedBy(currentUser);
+
     // audit-opt#2 - audit table
-//    auditRepo.save(new Audit("user-confirmed-email",userId, currentUser,...))
-    // audit-opt#3 - auto-save revisions on each change with Hibernate Envers https://hibernate.org/orm/envers/
+//    auditRepo.save(new Audit("user-confirmed-email",userId, currentUser,now(),"{......}"))
+
+    // audit-opt#3 - auto-save revisions on each change with Hibernate
+    // Envers https://hibernate.org/orm/envers/
+    // audit-opt#4 - time-traveling queriest: SELECT .. AS OF TIMESTAMP ...
 
 //    userRepo.save(user);
 
-    // audit-opt#4 - event sourcing = events are the source of truth
+    // audit-opt#5 - event sourcing = events are the source of truth
     // 1. a command results in domain event(s)
-    List<AbstractUserEvent> events = user.confirmEmail(email);
+    List<UserEvent> events = user.confirmEmail(email);
     // 2. changes can only happen when applying events
     events.forEach(eventProcessor::apply);
   }

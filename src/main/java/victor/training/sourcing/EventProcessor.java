@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import victor.training.sourcing.aggregate.User;
 import victor.training.sourcing.event.AbstractEvent;
-import victor.training.sourcing.event.AbstractUserEvent;
+import victor.training.sourcing.event.UserEvent;
 import victor.training.sourcing.event.Snapshot;
 import victor.training.sourcing.repo.EventRepo;
 import victor.training.sourcing.repo.SnapshotRepo;
@@ -35,12 +35,12 @@ public class EventProcessor {
 
   @Transactional
   public void apply(@Valid AbstractEvent event) {
-    apply((AbstractUserEvent) event); // only user events ftm
+    apply((UserEvent) event); // only user events ftm
   }
 
   @SneakyThrows
   @Transactional
-  public void apply(@Valid AbstractUserEvent event) {
+  public void apply(@Valid UserEvent event) {
     Optional<User> userOpt = userRepo.findById(event.aggregateId());
     if (userOpt.isPresent()) {
       // Safety-net: discard any changes performed by command processors to event in PersistenceContext

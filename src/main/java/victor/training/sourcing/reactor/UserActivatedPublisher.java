@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.sourcing.event.UserActivated;
+import victor.training.sourcing.event.UserEvent;
+import victor.training.sourcing.event.UserEvent.UserActivated;
 
 @Slf4j
 @RestController

@@ -7,10 +7,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.sourcing.ClearStateEvent;
-import victor.training.sourcing.event.UserActivated;
-import victor.training.sourcing.event.UserDeactivated;
-import victor.training.sourcing.event.UserEmailConfirmed;
-import victor.training.sourcing.event.UserEmailUpdated;
+import victor.training.sourcing.event.UserEvent;
+import victor.training.sourcing.event.UserEvent.UserActivated;
+import victor.training.sourcing.event.UserEvent.UserDeactivated;
+import victor.training.sourcing.event.UserEvent.UserEmailConfirmed;
+import victor.training.sourcing.event.UserEvent.UserEmailUpdated;
 
 import java.util.HashMap;
 import java.util.HashSet;

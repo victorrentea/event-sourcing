@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.sourcing.event.UserLoggedIn;
+import victor.training.sourcing.event.UserEvent;
+import victor.training.sourcing.event.UserEvent.UserLoggedIn;
 
 import java.time.LocalDateTime;
 import java.util.*;

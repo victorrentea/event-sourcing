@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import victor.training.sourcing.EventProcessor;
-import victor.training.sourcing.event.ConfirmationEmailSent;
-import victor.training.sourcing.event.UserCreated;
+import victor.training.sourcing.event.UserEvent.UserCreated;
 import victor.training.sourcing.repo.UserRepo;
+
+import static victor.training.sourcing.event.UserEvent.*;
 
 @Slf4j
 @Service

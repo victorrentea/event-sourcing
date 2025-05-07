@@ -6,11 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import victor.training.sourcing.aggregate.User;
 import victor.training.sourcing.event.AbstractEvent;
-import victor.training.sourcing.event.AbstractUserEvent;
+import victor.training.sourcing.event.UserEvent;
 import victor.training.sourcing.repo.EventRepo;
 import victor.training.sourcing.repo.SnapshotRepo;
 import victor.training.sourcing.repo.UserRepo;
@@ -61,18 +60,18 @@ public class EventRestApi {
     String aggregateType = lastEvent.aggregateType();
     String aggregateId = lastEvent.aggregateId();
 
-    List<AbstractUserEvent> events = eventRepo.findByAggregateTypeIgnoreCaseAndAggregateIdAndEventIdBetween(
+    List<UserEvent> events = eventRepo.findByAggregateTypeIgnoreCaseAndAggregateIdAndEventIdBetween(
             aggregateType,
             aggregateId,
             0L, eventId)
         .stream()
-        .map(AbstractUserEvent.class::cast)
+        .map(UserEvent.class::cast)
         .toList();
     if (events.isEmpty()) {
       throw new IllegalArgumentException("No events found for " + aggregateType + "/" + aggregateId);
     }
     User user = new User();
-    for (AbstractUserEvent event : events) {
+    for (UserEvent event : events) {
       log.info("Replaying event: {}", event);
       user.apply(event);
     }

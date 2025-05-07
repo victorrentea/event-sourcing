@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.sourcing.EventProcessor;
-import victor.training.sourcing.event.UserLoggedIn;
+import victor.training.sourcing.event.UserEvent;
+
+import static victor.training.sourcing.event.UserEvent.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,7 +17,7 @@ import victor.training.sourcing.event.UserLoggedIn;
 public class LoginListener {
   private final EventProcessor eventProcessor;
 
-  // pretend this is a @KafkaListener (to avoid seting up a local Kafka broker)
+  // @KafkaListener // pretend, to avoid seting up a local Kafka broker
   @GetMapping("users/{userId}/login/{application}")
   public void login(@PathVariable String userId, @PathVariable String application) {
     eventProcessor.apply(new UserLoggedIn(userId).application(application));
